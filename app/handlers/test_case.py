@@ -4,7 +4,7 @@ from sanic import Request, json
 from app.db.core.repository import Repository
 from app.services.test_case.validators.payload import CreateTestCasePayload
 
-from app.utils.function import route
+from app.utils.route import route
 
 
 class TestCaseHandler:

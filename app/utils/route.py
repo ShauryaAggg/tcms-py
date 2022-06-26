@@ -6,6 +6,7 @@ def route(uri: str, methods: List[str]):
         def wrapper(*args, **kwargs):
             return func(*args, **kwargs)
         wrapper.__name__ = func.__name__
+        wrapper.route = True
         wrapper.uri = uri
         wrapper.methods = methods
         return wrapper
