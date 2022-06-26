@@ -1,6 +1,9 @@
 from typing import Any
+
 from pymongo import collection, database
 from bson import ObjectId
+
+from app.models.core.index import IndexModel
 
 
 class MongoBaseMeta(type):
@@ -21,6 +24,12 @@ class MongoBaseRepository(metaclass=MongoBaseMeta):
         cls._db: database.Database = db
         cls._collection: collection.Collection = cls._db.get_collection(
             cls._collection)
+
+        config = getattr(cls._model, "Config", None)
+        if config:
+            cls._indexes = getattr(config, "indexes", IndexModel([]))
+
+        cls._init_collection()
 
         return super().__new__(cls, *args, **kwargs)
 
@@ -65,3 +74,13 @@ class MongoBaseRepository(metaclass=MongoBaseMeta):
     def delete(cls, id: Any) -> Any:
         result = cls._collection.delete_one({"_id": ObjectId(id)})
         return cls._model(**(result.raw_result))
+
+    @classmethod
+    def _init_collection(cls):
+        """
+        Initialize the collection
+        """
+        for index in cls._indexes:
+            cls._collection.create_index(
+                index.keys, unique=index.unique, sparse=index.sparse
+            )
