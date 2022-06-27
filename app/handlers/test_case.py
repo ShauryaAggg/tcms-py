@@ -8,6 +8,10 @@ from app.utils.route import route
 
 
 class TestCaseHandler(Handler):
+    """
+    TestCase Handler class.
+    """
+
     @route("/", methods=["POST"])
     def create_test_case(self, request: Request) -> HTTPResponse:
         payload = CreateTestCasePayload(**(request.json or {}))

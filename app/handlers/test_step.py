@@ -8,6 +8,9 @@ from app.utils.route import route
 
 
 class TestStepHandler(Handler):
+    """
+    TestStep Handler class.
+    """
 
     @route("/", methods=["POST"])
     def create_test_step(self, request: Request) -> HTTPResponse:
