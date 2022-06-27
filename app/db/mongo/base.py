@@ -17,9 +17,15 @@ class MongoBaseMeta(type):
 
 
 class MongoBaseRepository(metaclass=MongoBaseMeta):
+    """
+    Base Repository for MongoDB
+    """
+
     def __new__(cls, db, *args, **kwargs):
         """
         Initialize the class
+
+        :param db: MongoDB database
         """
         cls._db: database.Database = db
         cls._collection: collection.Collection = cls._db.get_collection(
@@ -78,7 +84,7 @@ class MongoBaseRepository(metaclass=MongoBaseMeta):
     @classmethod
     def _init_collection(cls):
         """
-        Initialize the collection
+        Initialize the collection and set the indexes for the collection
         """
         for index in cls._indexes:
             cls._collection.create_index(
