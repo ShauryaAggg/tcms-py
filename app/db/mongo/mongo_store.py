@@ -7,7 +7,18 @@ from app.db.core.repository import Repository
 
 
 class MongoStore:
+    """
+    Mongo Store for connecting to MongoDB.
+    """
+
     def __init__(self, db_uri: str, repositories: Mapping[str, "Repository"]) -> None:
+        """
+        Initialize the store, connect to the database and initialize all repositories.
+
+        :param db_uri: Database URI.
+        :param repositories: Mapping of repository names to repository instances.
+        """
+
         self._db_uri: str = db_uri
         self._db: database.Database = None
         self._client: pymongo.MongoClient = None
