@@ -13,11 +13,10 @@ class TestStepHandler(Handler):
     def create_test_step(self, request: Request) -> HTTPResponse:
         payload = CreateTestStepPayload(**(request.json or {}))
         test_step = self._repository.create(payload.dict())
-        print(test_case.serialize())
 
-        return json(test_step.dict())
+        return json(test_step.serialize())
 
     @route("/<id:str>", methods=["GET"])
     def get_test_step(self, request: Request, id: str) -> HTTPResponse:
         test_step = self._repository.find_by_id(id)
-        return json(test_step.dict())
+        return json(test_step.serialize())
