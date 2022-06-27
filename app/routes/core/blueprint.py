@@ -4,7 +4,15 @@ from app.utils.function import as_func
 
 
 class Blueprint(Blueprint):
+    """
+    Blueprint class that registers all handlers in the handler class.
+    """
+
     def register_handler(self, handler, *args, **kwargs):
+        """
+        Register handler methods in the blueprint.
+        """
+
         methods = [
             method for method in dir(handler)
             if not method.startswith('__') and
