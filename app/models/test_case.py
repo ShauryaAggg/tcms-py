@@ -15,6 +15,6 @@ class TestCase(Base):
 
     class Config:
         indexes = [
-            IndexModel(["version"], unique=True),
-            IndexModel([("name", 1), ("priority", 1)])
+            # IndexModel(["version"], unique=True),
+            IndexModel([("name", 1), ("priority", -1)])
         ]

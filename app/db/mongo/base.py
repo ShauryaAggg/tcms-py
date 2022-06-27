@@ -27,7 +27,7 @@ class MongoBaseRepository(metaclass=MongoBaseMeta):
 
         config = getattr(cls._model, "Config", None)
         if config:
-            cls._indexes = getattr(config, "indexes", IndexModel([]))
+            cls._indexes = getattr(config, "indexes", [])
 
         cls._init_collection()
 
@@ -61,7 +61,7 @@ class MongoBaseRepository(metaclass=MongoBaseMeta):
     @classmethod
     def create(cls, item: Any) -> Any:
         result = cls._collection.insert_one(item)
-        item.update({"_id": result.inserted_id})
+        item.update({"_id": str(result.inserted_id)})
         return cls._model(**item)
 
     @ classmethod

@@ -4,7 +4,7 @@ from app.utils.function import as_func
 
 
 class Blueprint(Blueprint):
-    def add_class_route(self, handler, *args, **kwargs):
+    def register_handler(self, handler, *args, **kwargs):
         methods = [
             method for method in dir(handler)
             if not method.startswith('__') and

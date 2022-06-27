@@ -1,10 +1,21 @@
+import json
 from typing import Any, Optional
 from datetime import datetime
+from bson import ObjectId
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class Base(BaseModel):
-    id: Any
-    created_at: Optional[datetime]
-    updated_at: Optional[datetime]
+    id: Any = Field(alias='_id')
+    created_at: Optional[datetime] = Field(default_factory=datetime.now)
+    updated_at: Optional[datetime] = Field(default_factory=datetime.now)
+
+    class Config:
+        json_encoders = {
+            datetime: lambda x: x.isoformat(),
+            ObjectId: lambda x: str(x)
+        }
+
+    def serialize(self):
+        return json.loads(self.json())

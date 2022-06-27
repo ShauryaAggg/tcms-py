@@ -12,10 +12,10 @@ motor = "2.5.1"
 flask = "*"
 pymongo = "*"
 sanic = "*"
+sqlalchemy = "*"
 
 [dev-packages]
 autopep8 = "*"
 
 [requires]
 python_version = "3.9"
-
