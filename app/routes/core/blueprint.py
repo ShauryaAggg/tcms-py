@@ -16,6 +16,6 @@ class Blueprint(Blueprint):
             method = getattr(handler, method)
             self.add_route(
                 as_func(method),
-                method.uri,
-                methods=method.methods,
+                uri=getattr(method, "uri", "/"),
+                methods=getattr(method, "methods", ["GET"]),
             )
