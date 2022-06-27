@@ -6,6 +6,10 @@ from app.models.core.index import IndexModel
 
 
 class TestSuite(Base):
+    """
+    TestSuite model
+    """
+
     name: str
     description: str
     test_cases: List["TestCase"]

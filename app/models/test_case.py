@@ -5,6 +5,10 @@ from app.models.core.index import IndexModel
 
 
 class TestCase(Base):
+    """
+    TestCase model
+    """
+
     name: str
     priority: int
     type: str

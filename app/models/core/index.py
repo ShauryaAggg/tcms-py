@@ -2,8 +2,19 @@ from typing import List, Any
 
 
 class IndexModel:
+    """
+    Index class to store index configuration of the model
+    """
 
     def __init__(self, keys, *args, **kwargs) -> None:
+        """
+        Initialize the index model and set the keys and options
+
+        :param keys: list of keys to index
+        :param unique: boolean to indicate if the index is unique
+        :param sparse: boolean to indicate if the index is sparse
+        """
+
         self._keys: List[tuple] = []
         self._unique = kwargs.get('unique', False)
         self._sparse = kwargs.get('sparse', False)
