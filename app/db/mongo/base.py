@@ -1,6 +1,7 @@
+import re
 from typing import Any
 
-from pymongo import collection, database
+from pymongo import ReturnDocument, collection, database
 from bson import ObjectId
 
 from app.models.core.index import IndexModel
@@ -52,6 +53,8 @@ class MongoBaseRepository(metaclass=MongoBaseMeta):
     @classmethod
     def find_by_id(cls, id: Any) -> Any:
         result = cls._collection.find_one({"_id": ObjectId(id)})
+        if not result:
+            raise ValueError("No document found with id: {}".format(id))
         return cls._model(**result)
 
     @classmethod
@@ -72,14 +75,18 @@ class MongoBaseRepository(metaclass=MongoBaseMeta):
 
     @ classmethod
     def update(cls, id: Any, item: Any) -> Any:
-        result = cls._collection.update_one(
-            {"_id": ObjectId(id)}, {"$set": item})
-        return cls._model(**(result.raw_result))
+        result = cls._collection.find_one_and_update(
+            {"_id": ObjectId(id)}, {"$set": item}, return_document=ReturnDocument.AFTER)
+        if not result:
+            raise ValueError("No item found with id: {}".format(id))
+        return cls._model(**(result))
 
     @ classmethod
     def delete(cls, id: Any) -> Any:
-        result = cls._collection.delete_one({"_id": ObjectId(id)})
-        return cls._model(**(result.raw_result))
+        result = cls._collection.find_one_and_delete({"_id": ObjectId(id)})
+        if not result:
+            raise ValueError("No item found with id: {}".format(id))
+        return cls._model(**(result))
 
     @classmethod
     def _init_collection(cls):
