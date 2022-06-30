@@ -1,6 +1,13 @@
+import re
 from typing import Any
 
-from sqlalchemy import Column, Integer, MetaData, String, DateTime, ForeignKey, Table
+import pydantic
+from sqlalchemy import (
+    Column,
+    MetaData,
+    ForeignKey,
+    Table
+)
 from sqlalchemy.orm import session
 
 from app.models.core.index import IndexModel
@@ -24,7 +31,8 @@ class SqlBaseRepository():
 
         metadata = MetaData(bind=cls._db.get_bind())
         cls._table: Table = Table(
-            cls._table, metadata, autoload_with=cls._db.get_bind())
+            cls._table, metadata, autoload_with=cls._db.get_bind()
+        )
 
         config = getattr(cls._model, "Config", None)
         if config:
@@ -78,3 +86,32 @@ class SqlBaseRepository():
         """
         Migrate the model
         """
+        cls._generate_table()
+
+    @classmethod
+    def _generate_table(cls) -> None:
+        """
+        Create the table
+        """
+        metadata = cls._db
+        fields = getattr(cls._model, "__fields__", None)
+        from app.db.sql.core.mapping import types
+
+        cols = []
+        for name, field in fields.items():
+            if (not types.get(field.type_, None) and issubclass(field.type_, pydantic.BaseModel)):
+                cols.append(Column(name, ForeignKey(
+                    f"{to_snake_case(field.type_.__name__)}.id"
+                )))
+            else:
+                cols.append(Column(name, types.get(field.type_, None)))
+
+        cls._table = Table(to_snake_case(cls._model.__name__), metadata, *cols)
+
+
+def to_snake_case(name: str) -> str:
+    """
+    Convert a string to snake case
+    """
+    sub = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', sub).lower()
