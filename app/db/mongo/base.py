@@ -4,8 +4,6 @@ from typing import Any
 from pymongo import ReturnDocument, collection, database
 from bson import ObjectId
 
-from app.models.core.index import IndexModel
-
 
 class MongoBaseMeta(type):
     def __new__(cls, name, bases, attrs, **kwargs):
@@ -13,6 +11,10 @@ class MongoBaseMeta(type):
             attrs.get("Meta", object), "model", None)
         attrs['_collection'] = getattr(
             attrs.get("Meta", object), "collection", None)
+
+        config = getattr(attrs['_model'], "Config", None)
+        if config:
+            attrs['_indexes'] = getattr(config, "indexes", [])
 
         return super().__new__(cls, name, bases, attrs, **kwargs)
 
@@ -31,10 +33,6 @@ class MongoBaseRepository(metaclass=MongoBaseMeta):
         cls._db: database.Database = db
         cls._collection: collection.Collection = cls._db.get_collection(
             cls._collection)
-
-        config = getattr(cls._model, "Config", None)
-        if config:
-            cls._indexes = getattr(config, "indexes", [])
 
         cls._init_collection()
 
