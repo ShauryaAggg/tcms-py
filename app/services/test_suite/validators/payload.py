@@ -7,8 +7,12 @@ class CreateTestSuitePayload(BaseModel):
     description: str
     test_cases: Optional[List[str]]
 
+    path: List[str]
+
 
 class UpdateTestSuitePayload(BaseModel):
     name: Optional[str]
     description: Optional[str]
     test_cases: Optional[List[str]]
+
+    path: Optional[List[str]]
