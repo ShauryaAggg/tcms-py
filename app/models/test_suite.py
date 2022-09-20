@@ -14,7 +14,11 @@ class TestSuite(Base):
     description: str
     test_cases: List["TestCase"]
 
+    path: List[str]
+
     class Config:
         indexes = [
-            IndexModel([("name", 1)])
+            IndexModel([("name", 1)]),
+            IndexModel([("path", 1)]),
+            IndexModel([("name", 1), ("path", 1)], unique=True)
         ]
